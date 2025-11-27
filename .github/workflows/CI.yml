@@ -54,6 +54,12 @@ jobs:
           name: code-quality-reports
           path: target/*-reports*
 
+      - name: Download code quality reports
+        uses: actions/download-artifact@v5
+        with:
+          name: code-quality-reports
+          path: reports
+
       - name: Archive build artifact
         uses: actions/upload-artifact@v5
         with:

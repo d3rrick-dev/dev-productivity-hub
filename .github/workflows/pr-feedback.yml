@@ -14,21 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download code quality reports
-        uses: actions/download-artifact@v6.0.0
-        with:
-          name: code-quality-reports
-          path: reports
+      # Compute Checkstyle & SpotBugs counts
+      - name: Parse code quality reports
+        id: parse_reports
+        run: |
+          CHECKSTYLE_ERRORS=$(grep -c "<error " reports/checkstyle-result.xml || echo 0)
+          SPOTBUGS_ISSUES=$(grep -c "<BugInstance " reports/spotbugsXml.xml || echo 0)
+          echo "checkstyle=$CHECKSTYLE_ERRORS" >> $GITHUB_OUTPUT
+          echo "spotbugs=$SPOTBUGS_ISSUES" >> $GITHUB_OUTPUT
 
-      - name: Parse reports and comment on PR
+      - name: Comment on PR
         uses: peter-evans/create-or-update-comment@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ## ⚙️ Code Quality Report
-            
-            - Checkstyle: $(cat reports/checkstyle-result.xml | grep error | wc -l) errors
-            - SpotBugs: $(cat reports/spotbugsXml.xml | grep BugInstance | wc -l) issues
+
+            - Checkstyle: ${{ steps.parse_reports.outputs.checkstyle }} errors
+            - SpotBugs: ${{ steps.parse_reports.outputs.spotbugs }} issues
 
             *Generated automatically by CI/CD Hub*
