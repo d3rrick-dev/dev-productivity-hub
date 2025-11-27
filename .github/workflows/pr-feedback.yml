@@ -14,11 +14,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download code quality reports
-        uses: actions/download-artifact@v6.0.0
-        with:
-          name: code-quality-reports
-          path: reports
+#      - name: Download code quality reports
+#        uses: actions/download-artifact@v6.0.0
+#        with:
+#          name: code-quality-reports
+#          path: reports
 
       - name: Parse reports and comment on PR
         uses: peter-evans/create-or-update-comment@v4
