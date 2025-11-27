@@ -12,9 +12,4 @@ class DevProductivityHubApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void sampleTest() {
-        assertThat(2 + 2).isEqualTo(3);
-    }
-
 }
